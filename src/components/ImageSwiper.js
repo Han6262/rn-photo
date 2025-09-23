@@ -8,29 +8,31 @@ import { BLACK, PRIMARY } from '../colors';
 import PropTypes from 'prop-types';
 
 const ImageSwiper = ({ photos }) => {
+  
+  console.log(photos)
   return (
     <Swiper
       loop={false}
       dot={<View style={styles.dot} />}
       activeDot={<View style={styles.activeDot} />}
     >
-      {photos.map(({ uri }, idx) => (
-        <View key={idx} style={styles.photo}>
+      {photos.map((photo, idx) => {
+          return (<View key={idx} style={styles.photo}>
           <ExpoImage
-            source={{ uri }}
+            source={photo.uri ?? photo} 
             style={StyleSheet.absoluteFill}
             resizeMode="cover"
           />
           <BlurView intensity={Platform.select({ ios: 10, android: 100 })}>
             <ExpoImage
               key={idx}
-              source={{ uri }}
+              source={photo.uri ?? photo} 
               style={styles.photo}
               resizeMode="contain"
             />
           </BlurView>
-        </View>
-      ))}
+        </View>)
+      })}
     </Swiper>
   );
 };

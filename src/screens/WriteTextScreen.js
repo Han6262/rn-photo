@@ -11,11 +11,16 @@ import {
   useWindowDimensions,
   TextInput,
   Text,
+  Alert,
 } from 'react-native';
 import { GRAY, WHITE } from '../colors';
 import { Image as ExpoImage } from 'expo-image';
 import HeaderRight from '../components/HeaderRight';
 import LocationSearch from '../components/LocationSearch';
+import { uploadPhoto } from '../api/storage';
+import { useUserState } from '../contexts/UserContext';
+import { createPost } from '../api/post';
+
 const MAX_TEXT_LENGTH = 50;
 
 const WriteTextScreen = () => {
@@ -28,6 +33,9 @@ const WriteTextScreen = () => {
 
   const [disabled, setDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [user] = useUserState();
+
 
   const [location, setLocation] = useState('');
   useEffect(() => {
@@ -42,10 +50,22 @@ const WriteTextScreen = () => {
 
   const onSubmit = useCallback(async () => {
     setIsLoading(true);
+    try {
+      const photos = await Promise.all(
+        photoUris.map((uri) => uploadPhoto({uri, uid: user.uid}))
+      );
+      await createPost({photos, location, text, user});
+      navigation.goBack();
+   } catch (e) {
+      console.log(e);
+      Alert.alert('극 장성 실패', e.message);
+      setIsLoading(false);
+    }
+    
     setTimeout(() => {
       setIsLoading(false);
     }, 2000);
-  }, []);
+  }, [photoUris, user.uid, location, text, user, navigation]);
 
   useLayoutEffect(() => {
     navigation.setOptions({

@@ -30,7 +30,7 @@ export const signIn = async ({ email, password }) => {
 
 // const PHOTO_URL = '.../o/profile.png?alt=media';
 const PHOTO_URL =
-  'https://firebasestorage.googleapis.com/v0/b/rn-photo-159f1.firebasestorage.app/o/profile.png?alt=media';
+  'https://firebasestorage.googleapis.com/v0/b/rn-photo-3f0f1.firebasestorage.app/o/profile.png?alt=media&token=d17a767a-32b7-4c00-b935-1fd31c625b60';
 
 export const signUp = async ({ email, password }) => {
   const { user } = await createUserWithEmailAndPassword(

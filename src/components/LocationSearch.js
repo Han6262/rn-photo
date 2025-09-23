@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 
 function LocationSearch({ styles, onPress, isLoading, isSelected}) {
     return(
-        <View style={[defaultSyles.container, styles?.container]}>
+        <View style={[defaultStyles.container, styles?.container]}>
             <GooglePlacesAutocomplete
                 placeholder="Location"
                 styles={{ container: { flex: 0 }, textInput: { paddingLeft: 30 } }}
