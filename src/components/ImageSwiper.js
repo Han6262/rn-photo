@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import Swiper from 'react-native-swiper';
@@ -8,7 +7,6 @@ import { BLACK, PRIMARY } from '../colors';
 import PropTypes from 'prop-types';
 
 const ImageSwiper = ({ photos }) => {
-  
   console.log(photos)
   return (
     <Swiper

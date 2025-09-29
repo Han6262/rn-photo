@@ -20,6 +20,7 @@ import LocationSearch from '../components/LocationSearch';
 import { uploadPhoto } from '../api/storage';
 import { useUserState } from '../contexts/UserContext';
 import { createPost } from '../api/post';
+import event, {EventTypes} from '../evet';
 
 const MAX_TEXT_LENGTH = 50;
 
@@ -55,6 +56,7 @@ const WriteTextScreen = () => {
         photoUris.map((uri) => uploadPhoto({uri, uid: user.uid}))
       );
       await createPost({photos, location, text, user});
+      event.emit(EventTypes.REFRESH)
       navigation.goBack();
    } catch (e) {
       console.log(e);
