@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -19,7 +20,7 @@ import HeaderRight from '../components/HeaderRight';
 import LocationSearch from '../components/LocationSearch';
 import { uploadPhoto } from '../api/storage';
 import { useUserState } from '../contexts/UserContext';
-import { createPost } from '../api/post';
+import { createPost, updatePost } from '../api/post';
 import event, {EventTypes} from '../evet';
 
 const MAX_TEXT_LENGTH = 50;
@@ -39,9 +40,19 @@ const WriteTextScreen = () => {
 
 
   const [location, setLocation] = useState('');
+  const locationRef = useRef(null);
+
   useEffect(() => {
     if (params) {
-      setPhotoUris(params.photoUris ?? []);
+      const { photoUris, post } = params;
+      if (photoUris) {
+        setPhotoUris(params.photoUris)
+      } else if (post) {
+        setPhotoUris(post.photos);
+        setText(post.text);
+        setLocation(post.location);
+        locationRef.current?.setAddressText(post.location);
+      }
     }
   }, [params]);
 
@@ -52,22 +63,29 @@ const WriteTextScreen = () => {
   const onSubmit = useCallback(async () => {
     setIsLoading(true);
     try {
-      const photos = await Promise.all(
-        photoUris.map((uri) => uploadPhoto({uri, uid: user.uid}))
-      );
-      await createPost({photos, location, text, user});
-      event.emit(EventTypes.REFRESH)
+      if (params?.photoUris) {
+        const photos = await Promise.all(
+          photoUris.map((uri) => uploadPhoto({uri, uid: user.uid}))
+        );
+        await createPost({photos, location, text, user});
+        event.emit(EventTypes.REFRESH)
+      } else if (params?.post) {
+        const {post} = params;
+        const updatedPost = {...post, location, text};
+        await updatePost(updatedPost);
+        event.emit(EventTypes.UPDATE, updatedPost);
+      }
       navigation.goBack();
-   } catch (e) {
-      console.log(e);
-      Alert.alert('극 장성 실패', e.message);
-      setIsLoading(false);
+    } catch (e) {
+       Alert.alert('글 수정 실패', e.message);
+      setIsLoading(false)
     }
+    
     
     setTimeout(() => {
       setIsLoading(false);
     }, 2000);
-  }, [photoUris, user.uid, location, text, user, navigation]);
+  }, [photoUris, user.uid, location, text, user, navigation, params]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -87,6 +105,7 @@ const WriteTextScreen = () => {
         ))}
       </View>
       <LocationSearch
+        ref={locationRef}
         onPress={({description}) => setLocation(description)}
         isLoading={isLoading}
         isSelected={!!location}

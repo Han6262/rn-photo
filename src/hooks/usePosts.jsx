@@ -36,7 +36,15 @@ const usePosts = (uid) => {
   const fetchNextPage = () => {
     getList()
   }
-  return {data, fetchNextPage, refetching, refetch};
+  const deletePost = ({id}) => {
+    setData((prev) => prev.filter((item) => item.id !== id));
+  }
+  const updatePost = (post) => {
+    setData((prev) => 
+      prev.map((item) => (item.id === post.id ? post : item))
+    )
+  }
+  return {data, fetchNextPage, refetching, refetch, deletePost, updatePost};
 };
 export default usePosts;
 

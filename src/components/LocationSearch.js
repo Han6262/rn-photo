@@ -6,12 +6,13 @@ import { MAP_KEY } from "../../env";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GRAY, PRIMARY } from "../colors";
 import PropTypes from "prop-types";
+import { forwardRef } from "react";
 
-
-function LocationSearch({ styles, onPress, isLoading, isSelected}) {
+function LocationSearch({ styles, onPress, isLoading, isSelected}, ref) {
     return(
         <View style={[defaultStyles.container, styles?.container]}>
             <GooglePlacesAutocomplete
+                ref={ref}
                 placeholder="Location"
                 styles={{ container: { flex: 0 }, textInput: { paddingLeft: 30 } }}
                 onPress={onPress}
@@ -42,6 +43,8 @@ function LocationSearch({ styles, onPress, isLoading, isSelected}) {
       </View>
     )
 }
+
+LocationSearch.displayName = 'LocationSearch';
 
 LocationSearch.defaultProps = {
     isLoading: false,

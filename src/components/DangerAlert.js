@@ -8,6 +8,7 @@ import Button, { ButtonTypes } from './Button';
 export const AlertTypes = {
   LOGOUT: 'LOGOUT',
   CANCEL: 'CANCEL',
+  DELET_POST: 'DELET_POST',
 };
 
 const DangerAlertProps = {
@@ -21,6 +22,11 @@ const DangerAlertProps = {
     title: '취소',
     message: '정말 취소하시겠습니까?',
   },
+  DELET_POST: {
+    iconName: 'delete-variant',
+    title: '글 삭제',
+    massage: '정말 삭제하시겠습니까?'
+  }
 };
 
 const DangerAlert = ({ visible, onClose, alertType, onConfirm }) => {

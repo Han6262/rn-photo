@@ -6,17 +6,19 @@ import { GRAY } from '../colors';
 import usePosts from '../hooks/usePosts';
 import event, { EventTypes } from '../evet';
 import { useUserState } from '../contexts/UserContext';
+import { updatePost } from '../api/post';
 const PostList = ({isMyPost}) => {
   const [user] = useUserState();
-  const {data, fetchNextPage, refetching, refetch} = usePosts(
+  const {data, fetchNextPage, refetching, refetch, deletePost} = usePosts(
     isMyPost && user.uid
   );
-
   useEffect(() => {
     event.addListener(EventTypes.REFRESH, refetch);
+    event.addListener(EventTypes.DELETE, deletePost);
+    event.addListener(EventTypes.UPDATE, updatePost);
 
     return () => event.removeAllListeners();
-  }, [refetch])
+  }, [refetch, deletePost, updatePost])
   return (
     <FlatList
         data={data}
@@ -29,13 +31,11 @@ const PostList = ({isMyPost}) => {
   );
 };
 PostList.propTypes = {
-  isMyPost: PropTypes.bool,
-}
-PostList.propTypes = {
     data: PropTypes.array.isRequired,
     fetchNextPage: PropTypes.func,
     refreshing: PropTypes.bool,
     onRefresh: PropTypes.func,
+  isMyPost: PropTypes.bool,
 }
 
 const styles = StyleSheet.create({
