@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 import { View, StyleSheet } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -8,13 +7,16 @@ import { GRAY, PRIMARY } from "../colors";
 import PropTypes from "prop-types";
 import { forwardRef } from "react";
 
-function LocationSearch({ styles, onPress, isLoading, isSelected}, ref) {
+const LocationSearch = forwardRef(({ styles, onPress, isLoading, isSelected, iconVisible}, ref) => {
     return(
         <View style={[defaultStyles.container, styles?.container]}>
             <GooglePlacesAutocomplete
                 ref={ref}
                 placeholder="Location"
-                styles={{ container: { flex: 0 }, textInput: { paddingLeft: 30 } }}
+                styles={{ 
+                    container: { flex: 0 }, 
+                    textInput: { paddingLeft: iconVisible ? 30 : 10 } 
+                }}
                 onPress={onPress}
                 onFail={(e) => {
                     console.log('GooglePlacesAutocomplete onFail:', e);
@@ -29,33 +31,37 @@ function LocationSearch({ styles, onPress, isLoading, isSelected}, ref) {
                     autoCorrect: false,
                     returnKeyType: 'search', */
                 }}
-                fetchDetails
                 minLength={1}
                 predefinedPlaces={[]} // <— 핵심: undefined 접근 방지
+                fetchDetails={true}
             />
-            <View style={[defaultStyles.icon, styles?.icon]}>
-                <MaterialCommunityIcons
-                    name="map-marker"
-                    size={20}
-                    color={isSelected ? PRIMARY.DEFAULT : GRAY.LIGHT}
-                />
-            </View>
+            {iconVisible && (
+                <View style={[defaultStyles.icon, styles?.icon]}>
+                    <MaterialCommunityIcons
+                        name="map-marker"
+                        size={20}
+                        color={isSelected ? PRIMARY.DEFAULT : GRAY.LIGHT}
+                    />
+                </View>
+            )}
       </View>
     )
-}
+})
 
 LocationSearch.displayName = 'LocationSearch';
 
 LocationSearch.defaultProps = {
     isLoading: false,
-    isSelected: false
+    isSelected: false,
+    iconVisible: true
 }
 
 LocationSearch.propTypes = {
     styles: PropTypes.object,
     onPress: PropTypes.func.isRequired,
     isLoading: PropTypes.bool,
-    isSelected: PropTypes.bool
+    isSelected: PropTypes.bool,
+    iconVisible: PropTypes.bool
 }
 
 const defaultStyles = StyleSheet.create({
